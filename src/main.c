@@ -9,7 +9,7 @@
 #include <nrfx_timer.h>
 
 /* 1000 msec = 1 sec */
-#define SLEEP_TIME_MS   1000
+#define SLEEP_TIME_MS   250
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
@@ -82,7 +82,7 @@ void main(void)
 	timer1_init();
 
 	// Setup TIMER1 to generate callbacks every second
-	timer1_repeated_timer_start(1000000);
+	timer1_repeated_timer_start(4000000);
 
 	while (1) {
 		ret = gpio_pin_toggle_dt(&led);
