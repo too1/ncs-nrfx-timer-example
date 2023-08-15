@@ -42,12 +42,15 @@ static const nrfx_timer_t my_timer = NRFX_TIMER_INSTANCE(1);
 //		 and if you need to access one of these from the timer callback it is necessary to use something like a k_work item to move execution out of the interrupt context. 
 void timer1_event_handler(nrf_timer_event_t event_type, void * p_context)
 {
-	static int counter = 0;
+	//static int counter = 0;
+	static int sjrZ = 0;
+	static int sjr2 = 0;
+	static int sjr3 = 0;
 	switch(event_type) {
 		case NRF_TIMER_EVENT_COMPARE0:
 			// Do your work here
 			// printk("Timer 1 callback. Counter = %d\n", counter++);
-			int sjrZ;
+			
 			sjrZ = gpio_pin_toggle_dt(&signalC);
 			if (sjrZ < 0) {
 			return;
@@ -58,13 +61,13 @@ void timer1_event_handler(nrf_timer_event_t event_type, void * p_context)
 			// added break below to shortcut rest out
 			//break;
 						
-			int sjr2;
+			
 			sjr2 = gpio_pin_toggle_dt(&signal2);
 			if (sjr2 < 0) {
 			return;
 			}
 			
-			int sjr3;
+			
 			sjr3 = gpio_pin_toggle_dt(&signal);
 			if (sjr3 < 0) {
 			return;
@@ -152,8 +155,8 @@ int dope;
 	// Initialize TIMER1
 	timer1_init();
 
-	// Setup TIMER1 to generate callbacks every second
-	timer1_repeated_timer_start(100000);
+	// Setup TIMER1 to generate callbacks every 100 micro seconds
+	timer1_repeated_timer_start(50);
 
 	while (1) {
 		
