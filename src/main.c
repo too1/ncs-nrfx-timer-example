@@ -7,6 +7,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 #include <nrfx_timer.h>
+#include <device.h>
+#include <devicetree.h>
 
 /* 1000 msec = 1 sec */
 #define SLEEP_TIME_MS   250
@@ -17,6 +19,7 @@
 
 #define OUT_PUT_PIN DT_ALIAS(led3)
 
+#define CUST_IO_PIN DT_ALIAS(gpiocus0)
 
 
 /*
@@ -26,6 +29,9 @@
 static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 // additions
 static const struct gpio_dt_spec signal = GPIO_DT_SPEC_GET(OUT_PUT_PIN, gpios);
+
+static const struct gpio_dt_spec signal2 = GPIO_DT_SPEC_GET(CUST_IO_PIN, gpios);
+
 
 // Get a reference to the TIMER1 instance
 static const nrfx_timer_t my_timer = NRFX_TIMER_INSTANCE(1);
@@ -41,11 +47,15 @@ void timer1_event_handler(nrf_timer_event_t event_type, void * p_context)
 			// Do your work here
 			printk("Timer 1 callback. Counter = %d\n", counter++);
 			int sjr2;
-			sjr2 = gpio_pin_toggle_dt(&signal);
+			sjr2 = gpio_pin_toggle_dt(&signal2);
 			if (sjr2 < 0) {
 			return;
-		}
-
+			}
+			int sjr3;
+			sjr3 = gpio_pin_toggle_dt(&signal);
+			if (sjr3 < 0) {
+			return;
+			}
 
 			break;
 		
@@ -91,7 +101,15 @@ void main(void)
 	if (sjr < 0) {
 		return;
 	}
+int sjrb;
 
+	if(!device_is_ready(signal2.port)){
+		return;
+	}
+	sjrb = gpio_pin_configure_dt(&signal2, GPIO_OUTPUT_ACTIVE);
+	if (sjrb < 0) {
+		return;
+	}
 	// end adds
 
 
@@ -110,10 +128,11 @@ void main(void)
 	timer1_init();
 
 	// Setup TIMER1 to generate callbacks every second
-	timer1_repeated_timer_start(1000000);
+	timer1_repeated_timer_start(100000);
 
 	while (1) {
 		
+
 
 
 		ret = gpio_pin_toggle_dt(&led);
