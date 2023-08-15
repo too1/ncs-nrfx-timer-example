@@ -13,12 +13,19 @@
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
+/* additions */
+
+#define OUT_PUT_PIN DT_ALIAS(led3)
+
+
 
 /*
  * A build error on this line means your board is unsupported.
  * See the sample documentation for information on how to fix this.
  */
 static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
+// additions
+static const struct gpio_dt_spec signal = GPIO_DT_SPEC_GET(OUT_PUT_PIN, gpios);
 
 // Get a reference to the TIMER1 instance
 static const nrfx_timer_t my_timer = NRFX_TIMER_INSTANCE(1);
@@ -33,6 +40,13 @@ void timer1_event_handler(nrf_timer_event_t event_type, void * p_context)
 		case NRF_TIMER_EVENT_COMPARE0:
 			// Do your work here
 			printk("Timer 1 callback. Counter = %d\n", counter++);
+			int sjr2;
+			sjr2 = gpio_pin_toggle_dt(&signal);
+			if (sjr2 < 0) {
+			return;
+		}
+
+
 			break;
 		
 		default:
@@ -67,6 +81,20 @@ static void timer1_repeated_timer_start(uint32_t timeout_us)
 
 void main(void)
 {
+	//additions
+	int sjr;
+
+	if(!device_is_ready(signal.port)){
+		return;
+	}
+	sjr = gpio_pin_configure_dt(&signal, GPIO_OUTPUT_ACTIVE);
+	if (sjr < 0) {
+		return;
+	}
+
+	// end adds
+
+
 	int ret;
 
 	if (!device_is_ready(led.port)) {
@@ -82,9 +110,12 @@ void main(void)
 	timer1_init();
 
 	// Setup TIMER1 to generate callbacks every second
-	timer1_repeated_timer_start(4000000);
+	timer1_repeated_timer_start(1000000);
 
 	while (1) {
+		
+
+
 		ret = gpio_pin_toggle_dt(&led);
 		if (ret < 0) {
 			return;
