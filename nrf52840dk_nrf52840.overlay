@@ -14,11 +14,11 @@
     gpiocustom {
         compatible = "gpio-keys";
         gpiocus0: gpiocus_0 {
-            gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
+            gpios = <&gpio1 5 GPIO_ACTIVE_LOW>;
             label = "Custom gpio 28";
         };
         gpiocus1: gpiocus_1 {
-            gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
+            gpios = <&gpio1 3 GPIO_ACTIVE_LOW>;
             label = "Custom gpio 29";
         };
     };

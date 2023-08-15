@@ -20,7 +20,7 @@
 #define OUT_PUT_PIN DT_ALIAS(led3)
 
 #define CUST_IO_PIN DT_ALIAS(gpiocus0)
-
+#define SEC_CUST_IO_PIN DT_ALIAS(gpiocus1)
 
 /*
  * A build error on this line means your board is unsupported.
@@ -32,6 +32,7 @@ static const struct gpio_dt_spec signal = GPIO_DT_SPEC_GET(OUT_PUT_PIN, gpios);
 
 static const struct gpio_dt_spec signal2 = GPIO_DT_SPEC_GET(CUST_IO_PIN, gpios);
 
+static const struct gpio_dt_spec signalC = GPIO_DT_SPEC_GET(SEC_CUST_IO_PIN, gpios);
 
 // Get a reference to the TIMER1 instance
 static const nrfx_timer_t my_timer = NRFX_TIMER_INSTANCE(1);
@@ -45,17 +46,31 @@ void timer1_event_handler(nrf_timer_event_t event_type, void * p_context)
 	switch(event_type) {
 		case NRF_TIMER_EVENT_COMPARE0:
 			// Do your work here
-			printk("Timer 1 callback. Counter = %d\n", counter++);
+			// printk("Timer 1 callback. Counter = %d\n", counter++);
+			int sjrZ;
+			sjrZ = gpio_pin_toggle_dt(&signalC);
+			if (sjrZ < 0) {
+			return;
+
+			}
+
+
+			// added break below to shortcut rest out
+			//break;
+						
 			int sjr2;
 			sjr2 = gpio_pin_toggle_dt(&signal2);
 			if (sjr2 < 0) {
 			return;
 			}
+			
 			int sjr3;
 			sjr3 = gpio_pin_toggle_dt(&signal);
 			if (sjr3 < 0) {
 			return;
 			}
+			
+
 
 			break;
 		
@@ -110,6 +125,16 @@ int sjrb;
 	if (sjrb < 0) {
 		return;
 	}
+int dope;
+	if(!device_is_ready(signalC.port)){
+		return;
+	}
+	dope = gpio_pin_configure_dt(&signalC, GPIO_OUTPUT_ACTIVE);
+	if(dope < 0) {
+		return;
+	}
+
+
 	// end adds
 
 
