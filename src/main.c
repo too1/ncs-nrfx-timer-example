@@ -155,8 +155,8 @@ int dope;
 	// Initialize TIMER1
 	timer1_init();
 
-	// Setup TIMER1 to generate callbacks every 100 micro seconds
-	timer1_repeated_timer_start(50);
+	// Setup TIMER1 to generate callbacks every 417 micro seconds
+	timer1_repeated_timer_start(415);
 
 	while (1) {
 		
