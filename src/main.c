@@ -9,7 +9,7 @@
 #include <nrfx_timer.h>
 #include <device.h>
 #include <devicetree.h>
-/* new repository added old branch removed*/
+/* new repository added old branch removed and new private one as well*/
 /* 1000 msec = 1 sec */
 #define SLEEP_TIME_MS   250
 
