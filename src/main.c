@@ -43,9 +43,8 @@ void timer1_event_handler(nrf_timer_event_t event_type, void * p_context)
 // Function for initializing the TIMER1 peripheral using the nrfx driver
 static void timer1_init(void)
 {
-	nrfx_timer_config_t timer_config = NRFX_TIMER_DEFAULT_CONFIG;
+	nrfx_timer_config_t timer_config = NRFX_TIMER_DEFAULT_CONFIG(1000000);
 	timer_config.bit_width = NRF_TIMER_BIT_WIDTH_32;
-	timer_config.frequency = NRF_TIMER_FREQ_1MHz;
 
 	int err = nrfx_timer_init(&my_timer, &timer_config, timer1_event_handler);
 	if (err != NRFX_SUCCESS) {
@@ -65,17 +64,17 @@ static void timer1_repeated_timer_start(uint32_t timeout_us)
                                 NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, true);
 }
 
-void main(void)
+int main(void)
 {
 	int ret;
 
 	if (!device_is_ready(led.port)) {
-		return;
+		return 0;
 	}
 
 	ret = gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);
 	if (ret < 0) {
-		return;
+		return 0;
 	}
 
 	// Initialize TIMER1
@@ -87,8 +86,10 @@ void main(void)
 	while (1) {
 		ret = gpio_pin_toggle_dt(&led);
 		if (ret < 0) {
-			return;
+			return 0;
 		}
 		k_msleep(SLEEP_TIME_MS);
 	}
+
+	return 0;
 }

@@ -13,8 +13,9 @@ This can be used to trigger an action at regular intervals with higher accuracy 
 Requirements
 ************
 
-nRF Connect SDK v2.3.0
+nRF Connect SDK v2.5.2
 
 Tested on the following boards:
-
-- nrf52840dk_nrf52840
+    - nrf52dk_nrf52832
+    - nrf52840dk_nrf52840
+    - nrf5340dk_nrf5340_cpuapp
